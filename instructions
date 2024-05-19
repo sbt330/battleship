@@ -1,0 +1,87 @@
+For the final project, you are going to design and implement a network application to play the game
+Battleship©. This will involve designing the protocol and designing and implementing both the server and
+client applications.
+The Game
+Battleship is a two person strategy game that is played on four 10 × 10 grids, two for each player. The
+individual squares in the grid are identified by letters and numbers. Each player has a fleet of five ships
+that they secretly arrange on one of their grids known as the ocean grid.
+
+The locations of the ships are concealed from the other player. The players take turns firing shots at the
+other player’s ships with the objective of destroying the other player’s fleet. The players record the shots
+they fire on their second grid known as the target grid.
+The fleet consists of five ships of different sizes, with the size of the ship indicated by the number of squares
+it occupies on the grid:
+Class of Ship Size
+Carrier 5
+Battleship 4
+Cruiser 3
+Submarine 3
+Destroyer 2
+
+After the ships are arranged on the ocean grids, the game proceeds in rounds. In each round, each player
+takes a turn. A round consists of the following steps:
+• One player fires a shot at their opponent’s grid by indicating the target square, which is specified by
+the letter and number of the square (e.g. E 7).
+• The opponent announces whether the shot hit or missed a ship and marks the shot on their grid. A
+hit is usually indicated by a red peg and a miss by a white peg.
+• The attacking player marks the shot on their target grid in order to build a picture of the opponent’s
+fleet.
+• If all of the squares of a ship have been hit, the opponent announces the sinking of a ship. Some
+variations of play require that the opponent also announce which specific ship was sunk. Your version
+of the game should simply announce a ship has been sunk.
+Play continues until all of a player’s ships have been sunk. In which case, the opponent wins. If all of the
+ships of both players are sunk at the end of a round, the game is a draw.
+The Application
+Your implementation of Battleship will follow the standard rules, but the game will be played over the
+network. It will require a server and two player clients.serverplayer 1 player 2
+Interface. The main objective of this assignment is the design and development of the network component.
+Thus, the actual interface for the game should be rather simple and very basic. I will provide code to help
+in the construction of the interface.
+Players. The player clients should include a game logic component that manages the grids and the moves
+by the players. I will also provide code for this component of the game. The interaction of a player with
+the game will be very minimal. They should be able to:
+• position their ships
+• take a shot on their turn
+all other actions of the game will be performed by the player client application. Throughout the game,
+players must be informed, through text on the screen, of the action taking place. This includes what action
+they must perform, how to perform the action, the target of a shot, the result of the shot, and the result
+of the game.
+
+Protocol
+You are to design and implement a complete protocol for use in implementing the network game. Your
+protocol should:
+• Use one or more structs for transmitting messages.
+• Limit the amount of information transmitted to only that which is necessary.
+• Include minimum security in the form of pass code or session id. The pass code should be a random
+number in the range [1, 000 . . . 100, 000].
+The server, which will manage a single game instance, should always be up and running and available to
+accept a connection. As part of the server:
+• Only two players may connect to the server. Each player must identify themselves as either player 1
+or player 2.
+• Player 1 must connect first.
+• Player 2 must provide the correct pass code in order to be part of the game.
+• Both players must connect to the server before the game becomes active. But after a player connects,
+they may begin positioning their ships.
+• Player one takes the first shot after the game begins.
+• Every client request must result in a response to that client, except for a request to quit.
+Security
+To provide minimum security, your application must use pass codes. When the first player connects to the
+server, the server should send the player a unique pass code or session id. When the second player connects
+to the server, they must provide the correct pass code in order to be part of the game.
+Requirements
+You are to construct a well designed, structured, and documented program. This includes a file prolog at
+the top of each source file that includes the name of the file, your name, and a brief description of the
+program or contents of the file.
+• You must use constant variables for the protocol codes, both success and errors.
+• You must use multiple modules and a Makefile to build your program.
+• Additional modules have been provided for use with this assignment. They are located in the
+battleship folder within the course folder. I have also provided initial code for both the server
+and client programs, which you should extend in completing this project.
+• Your programs must use the modules and abstract data types provided for this assignment. Attempt-
+ing to design and/or implement your own tools will give the impression that you used some type of
+online AI to help with your implementation.
+• Your programs must compile (using the g++ compiler) and run on the department’s Linux systems.
+Note, your programs must compile and run in order for them to be graded.
+• This is a group assignment, with 2 - 3 members per group. Each member of the group must take
+responsibility for a distinct part of the design and implementation of the programs. Thus, each
+member must contribute their own code to the project.
