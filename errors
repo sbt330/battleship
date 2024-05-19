@@ -2,11 +2,37 @@
 make bshipserver
 make[1]: Entering directory '/home/adams/cs330/battleship'
 g++ -c -I ../tools bshipserver.cc
-g++ -o bshipserver bshipserver.o gamelogic.o ../tools/socket.o ../tools/select.o
-/usr/bin/ld: bshipserver.o: in function `main':
-bshipserver.cc:(.text+0xa1): undefined reference to `getSessionID()'
-collect2: error: ld returned 1 exit status
-make[1]: *** [Makefile:6: bshipserver] Error 1
+bshipserver.cc: In function ‘int main(int, char**)’:
+bshipserver.cc:54:15: error: ‘class FDSet’ has no member named ‘set’
+   54 |         fdset.set();
+      |               ^~~
+bshipserver.cc:56:26: error: ‘class FDSet’ has no member named ‘maxFD’
+   56 |         if (select(fdset.maxFD() + 1, fdset.getFDSet(), NULL, NULL, NULL) < 0)
+      |                          ^~~~~
+bshipserver.cc:56:45: error: ‘class FDSet’ has no member named ‘getFDSet’; did you mean ‘FDSet’?
+   56 |         if (select(fdset.maxFD() + 1, fdset.getFDSet(), NULL, NULL, NULL) < 0)
+      |                                             ^~~~~~~~
+      |                                             FDSet
+bshipserver.cc:63:19: error: ‘class FDSet’ has no member named ‘isSet’
+   63 |         if (fdset.isSet(theServer.fd()))
+      |                   ^~~~~
+bshipserver.cc: In function ‘void handleClientConnection()’:
+bshipserver.cc:97:35: error: ‘class Socket’ has no member named ‘recvInt’; did you mean ‘recv’?
+   97 |     int sessionId = clientSocket->recvInt();
+      |                                   ^~~~~~~
+      |                                   recv
+bshipserver.cc: In function ‘void closeConnections()’:
+bshipserver.cc:134:24: error: ‘class Socket’ has no member named ‘closeSocket’
+  134 |         player1Client->closeSocket();
+      |                        ^~~~~~~~~~~
+bshipserver.cc:140:24: error: ‘class Socket’ has no member named ‘closeSocket’
+  140 |         player2Client->closeSocket();
+      |                        ^~~~~~~~~~~
+bshipserver.cc:144:15: error: ‘class ServerSocket’ has no member named ‘closeSocket’
+  144 |     theServer.closeSocket();
+      |               ^~~~~~~~~~~
+make[1]: *** [Makefile:9: bshipserver.o] Error 1
 make[1]: Leaving directory '/home/adams/cs330/battleship'
 make: *** [Makefile:2: app] Error 2
 [adams@cslab5 battleship]$ 
+
