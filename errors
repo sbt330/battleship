@@ -1,27 +1,12 @@
+[adams@cslab5 battleship]$ make
 make bshipserver
 make[1]: Entering directory '/home/adams/cs330/battleship'
 g++ -c -I ../tools bshipserver.cc
-bshipserver.cc: In function ‘void handlePlayerRequest(int, Socket*)’:
-bshipserver.cc:114:14: error: ‘struct PlayerResponse’ has no member named ‘turn’
-  114 |     response.turn = gameLogic.WhoseTurn;   // Assuming WhoseTurn is public, otherwise use a method to get it.
-      |              ^~~~
-bshipserver.cc:114:31: error: ‘int GameLogic::WhoseTurn’ is private within this context
-  114 |     response.turn = gameLogic.WhoseTurn;   // Assuming WhoseTurn is public, otherwise use a method to get it.
-      |                               ^~~~~~~~~
-In file included from bshipserver.cc:7:
-gamelogic.h:174:7: note: declared private here
-  174 |   int WhoseTurn;
-      |       ^~~~~~~~~
-bshipserver.cc:114:31: note: field ‘int GameLogic::WhoseTurn’ can be accessed via ‘int GameLogic::whoseTurn() const’
-  114 |     response.turn = gameLogic.WhoseTurn;   // Assuming WhoseTurn is public, otherwise use a method to get it.
-      |                               ^~~~~~~~~
-      |                               whoseTurn()
-bshipserver.cc:115:14: error: ‘struct PlayerResponse’ has no member named ‘numShipsPlayer1’
-  115 |     response.numShipsPlayer1 = gameLogic.numShips(1);
-      |              ^~~~~~~~~~~~~~~
-bshipserver.cc:116:14: error: ‘struct PlayerResponse’ has no member named ‘numShipsPlayer2’
-  116 |     response.numShipsPlayer2 = gameLogic.numShips(2);
-      |              ^~~~~~~~~~~~~~~
-make[1]: *** [Makefile:9: bshipserver.o] Error 1
+g++ -o bshipserver bshipserver.o gamelogic.o ../tools/socket.o ../tools/select.o
+/usr/bin/ld: bshipserver.o: in function `main':
+bshipserver.cc:(.text+0xa1): undefined reference to `getSessionID()'
+collect2: error: ld returned 1 exit status
+make[1]: *** [Makefile:6: bshipserver] Error 1
 make[1]: Leaving directory '/home/adams/cs330/battleship'
 make: *** [Makefile:2: app] Error 2
+[adams@cslab5 battleship]$ 
