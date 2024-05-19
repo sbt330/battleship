@@ -88,45 +88,36 @@ void processRequests()
 
 /* Handle a player request, which includes both placing of the ships and 
     taking shots at the opponents' ships. */
-void handlePlayerRequest(int player, Socket *client)
-{
-  PlayerRequest request;
-  int result = client->recv(&request, sizeof(request));
+void handlePlayerRequest(int player, Socket *clientSocket) {
+    PlayerRequest request;
+    PlayerResponse response;
 
-   /* If a player closes its connection, end the game and close all sockets. */
-  if (result == 0) 
-    closeConnections();
-  
-   /* Build the response. */
-  PlayerResponse response = {0, 0, 0, 0, 0};
+    // Read the player request.
+    clientSocket->recv(&request, sizeof(request));
 
-  if (gameLogic.inSetupMode()) {
-    // handle the requests made during setup mode.
-    if (request.op == 1) {
-      int placeResult = gameLogic.placeShip(player, request.row, request.col, request.dir, request.shipType);
-      response.code = placeResult;
+    // Process the request based on the operation code.
+    switch (request.op) {
+    case 1: // Place a ship.
+        response.code = gameLogic.placeShip(player, request.row, request.col, request.dir, request.shipType);
+        break;
+
+    case 2: // Fire a shot.
+        response.code = gameLogic.fireShot(request.row, request.col);
+        break;
+
+    default:
+        response.code = ERR_INVALID_CODE;
+        break;
     }
 
-    // when both players have placed all of their ships, then start the game.
-    if (gameLogic.numShips(1) == 5 && gameLogic.numShips(2) == 5) {
-      gameLogic.startGame();
-      printf("Game has begun.\n");
-    }
-  } else if (gameLogic.inPlayMode()) {
-    if (request.op == 2) {
-      int shotResult = gameLogic.fireShot(request.row, request.col);
-      response.code = shotResult;
-      response.row = request.row;
-      response.col = request.col;
-      response.turn = gameLogic.getTurn();
-      response.numShipsPlayer1 = gameLogic.numShips(1);
-      response.numShipsPlayer2 = gameLogic.numShips(2);
-    }
-  }
+    // Add missing turn and ship count information to the response.
+    response.turn = gameLogic.WhoseTurn;   // Assuming WhoseTurn is public, otherwise use a method to get it.
+    response.numShipsPlayer1 = gameLogic.numShips(1);
+    response.numShipsPlayer2 = gameLogic.numShips(2);
 
-  client->send(&response, sizeof(response));
+    // Send the response to the client.
+    clientSocket->send(&response, sizeof(response));
 }
-
 /* Cleanly closes the connections of both players and resets the game logic. */
 void closeConnections()
 {
